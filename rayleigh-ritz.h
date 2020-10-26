@@ -36,10 +36,9 @@ private:
 	int n;
 	float h;
 	float L,U;
-	vector<float> X;
 	B_Spline myBasis1;
 	B_Spline myBasis2;
     Problem myProblem;
     MetodoTrapezoide myIntegral;
-    int k = 8;
+
 };

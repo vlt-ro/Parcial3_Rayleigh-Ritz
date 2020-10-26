@@ -30,18 +30,11 @@ void Rayleigh_Ritz::setParameters(int ns)
 {
 	n = ns;
 	h = 1./(1+n);
-	vector<float> Xtemp(n+2);
-
-	for (int i = 0; i <= n+1; ++i) Xtemp[i] = i*h;
-	
-	X = Xtemp;
 }
 
 float Rayleigh_Ritz::eval_aij(float x)
 {
-	cout<<n<<endl;
 	return myProblem.p(x)*myBasis1.dphi(x)*myBasis2.dphi(x)+myProblem.q(x)*myBasis1.phi(x)*myBasis2.phi(x);
-	//return 0;
 }
 
 float Rayleigh_Ritz::Aij(int i, int j, float lim_inf, float lim_sup)
@@ -49,22 +42,20 @@ float Rayleigh_Ritz::Aij(int i, int j, float lim_inf, float lim_sup)
   myBasis1.setParameters(i, n);
   myBasis2.setParameters(j, n);
   
-  return myIntegral.solve(lim_inf,lim_sup,8,[this](float x)->float {return this->eval_aij(x);});
+  return myIntegral.solve(lim_inf,lim_sup,15,[this](float x)->float {return this->eval_aij(x);});
 }
 
 
 float Rayleigh_Ritz::eval_bi(float x)
 {
 	return myProblem.f(x)*myBasis1.phi(x);
-	//return 0;
 }
 
 float Rayleigh_Ritz::bi(int i, float lim_inf, float lim_sup)
 {
   myBasis1.setParameters(i, n);
 
-  //return eval_bi(i*0.3);
-  return myIntegral.solve(lim_inf,lim_sup,8,[this](float x)->float {return this->eval_bi(x);});
+  return myIntegral.solve(lim_inf,lim_sup,15,[this](float x)->float {return this->eval_bi(x);});
 
 }
 
@@ -122,7 +113,7 @@ void Rayleigh_Ritz::solve()
 
 	  if (i<=n-3)
 	  {
-	  	for (int j = 0; j < i-4; ++j)
+	  	for (int j = i+4; j <= n+1; ++j)
 	  	{
 	  		A[i][j] = 0;
 	  	}
@@ -145,24 +136,25 @@ void Rayleigh_Ritz::solve()
   mySisEcua.solve();
 
 
-  cout<<"| i |	c_i	  |	x_i	| phi(x_i)    |	y(x_i)     ||y(x_i)-phi(x_i)||"<<endl;
+  cout<<"|  i|	c_i	  |	x_i	|   y(x_i)    |y_exacta(x_i)||y(x_i)-y_exacta(x_i)||"<<endl;
 
+  float y_exacta[n+2]={0,0.30901699,0.58778525,0.80901699,0.95105652,1,0.95105652,0.8091699,0.58778525,0.30901699,0};
   for (int i = 0; i < n+2; ++i)
   {
     myBasis1.setParameters(i, n);
-    float phi_i = myBasis1.phi(x_j(i));
     float y_i = y(x_j(i), c);
 
-  	cout<<"| "<<i<<" ";
+  	cout<<"|"<<setw(3)<<i;
 
   	cout<<"|"<<setw(13)<<c[i];
   	cout<<"|"<<setw(13)<<x_j(i);
-
-  	cout<<"|"<<setw(13)<<phi_i;
+  	//cout<<y_i<<" ,";
 
   	cout<<"|"<<setw(13)<<y_i;
 
-  	cout<<"|"<<setw(15)<<abs(phi_i-y_i)<<" |\n";
+  	cout<<"|"<<setw(13)<<y_exacta[i];
+
+  	cout<<"|"<<setw(20)<<abs(y_exacta[i]-y_i)<<" |\n";
 
 
   }  

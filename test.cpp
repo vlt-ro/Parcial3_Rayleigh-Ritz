@@ -77,7 +77,7 @@ int main()
   cout<<base.eval(0.6)<<endl;
   */
 
-  Rayleigh_Ritz myProblem(9);
+  Rayleigh_Ritz myProblem(20);
 
   myProblem.solve();
   
