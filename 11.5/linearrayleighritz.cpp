@@ -30,15 +30,6 @@ double Basis::operator()(double x)
 }
 
 
-
-LinearRayleighRitz::LinearRayleighRitz()
-{
-}
-
-LinearRayleighRitz::~LinearRayleighRitz()
-{
-}
-
 std::vector<double> LinearRayleighRitz::solve(std::vector<double> &x,
                                              double(*p)(double),
                                              double(*q)(double),
@@ -108,14 +99,14 @@ std::vector<double> LinearRayleighRitz::solve(std::vector<double> &x,
     for(int i=2; i<=n; ++i)
     {
         a.push_back(alpha[i] - beta[i-1]*zeta[i-1]);
-        z.push_back( (b[i] - beta[i-1]/z[i-1])/a[i] );
+        z.push_back( (b[i] - beta[i-1]*z[i-1])/a[i] );
 
         if(i<n)
             zeta.push_back(beta[i]/a[i]);
     }
 
     /**************************************************/
-    /* Step 9, 10 and 10: Calculo de los factores c_i */
+    /* Step 9 and 10: Calculo de los factores c_i */
     /**************************************************/
     /* Coeficientes de la expansión en series*/
     vector<double> c(n); //c_i con i=0,...,n-1
@@ -133,30 +124,30 @@ std::vector<Basis>& LinearRayleighRitz::getBasis()
 
 double LinearRayleighRitz::Q1(int i, std::vector<double>& x, double(*q)(double))
 {
-    return ( q(x[i]) + q(x[i+1]) ) * h[i] / 12;
+    return ( q(x[i]) + q(x[i+1]) ) * h[i] / 12.0;
 }
 
 double LinearRayleighRitz::Q2(int i, std::vector<double>& x, double(*q)(double))
 {
-    return ( 3*q(x[i]) + q(x[i-1]) ) * h[i-1] / 12;
+    return ( 3*q(x[i]) + q(x[i-1]) ) * h[i-1] / 12.0;
 }
 
 double LinearRayleighRitz::Q3(int i, std::vector<double>& x, double(*q)(double))
 {
-    return ( 3*q(x[i]) + q(x[i+1]) ) * h[i] / 12;
+    return ( 3*q(x[i]) + q(x[i+1]) ) * h[i] / 12.0;
 }
 
 double LinearRayleighRitz::Q4(int i, std::vector<double>& x, double(*p)(double))
 {
-    return ( p(x[i]) + p(x[i-1]) ) * h[i-1] / 2;
+    return ( p(x[i]) + p(x[i-1]) ) * h[i-1] / 2.0;
 }
 
 double LinearRayleighRitz::Q5(int i, std::vector<double>& x, double(*f)(double))
 {
-    return ( 2*f(x[i]) + f(x[i-1]) ) * h[i-1] / 6;
+    return ( 2*f(x[i]) + f(x[i-1]) ) * h[i-1] / 6.0;
 }
 
 double LinearRayleighRitz::Q6(int i, std::vector<double>& x, double(*f)(double))
 {
-    return ( 2*f(x[i]) + f(x[i+1]) ) * h[i] / 6;
+    return ( 2*f(x[i]) + f(x[i+1]) ) * h[i] / 6.0;
 }

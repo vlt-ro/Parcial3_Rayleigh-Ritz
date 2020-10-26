@@ -16,9 +16,6 @@ class LinearRayleighRitz
 {
 public:
 
-    LinearRayleighRitz();
-    ~LinearRayleighRitz();
-
     /**
      * @brief Resuelve de forma aproximada la EDO
      *        -D( p(x) D(y) ) + q(x)y = f(x)
@@ -67,6 +64,7 @@ public:
      * @brief Constructor para inicializar los parametros
      *        de un elemento de la base específico.
      * @param x_im1 Punto x_{i-1}
+     * @param x_i   Punto x_i
      * @param x_ip1 Punto x_{i+1}
      */
     Basis(double x_im1, double x_i,double x_ip1);

@@ -3,6 +3,8 @@
 #include <vector>
 #include <cmath>
 
+#include <fstream>
+
 using namespace std;
 
 double p(double)
@@ -33,8 +35,9 @@ double expand(double x, vector<double>& c, vector<Basis>&basis)
 int main()
 {
     vector<double>x;
-    for(int i=0; i<11; ++i)
-        x.push_back(0.1*i);
+    int n = 9;
+    for(int i=0; i<=n+1; ++i)
+        x.push_back((1.0/(float)(n+1))*i);
 
     LinearRayleighRitz rr;
     auto c = rr.solve(x, p, q, f);
@@ -46,7 +49,7 @@ int main()
 
     cout << "x\tphi" << endl;
     for(size_t i=0; i<x.size(); ++i)
-        cout << x[i] << "\t" << expand(x[i], c, phi) << endl;
+        cout << x[i] << ",\t" << expand(x[i], c, phi) << "," << endl;
 
 
 
