@@ -1,21 +1,14 @@
-/**
- * @author Valentina Roquemen Echeverry
- * @brief  Solucion de sistemas de ecuaciones de la
- *         forma Ac=b usando el metodo de Cholesky
- *         A es una matriz definida positiva
- */
-
 #include <vector>
 #include<cmath>
 
 #include "cholesky.h"
 
-Cholesky::Cholesky(int n, const vector<vector<float>>& A_n, const vector<float>& b_n, vector<float>& c_n)
+Cholesky::Cholesky(int n, const vector<vector<float>>& A, const vector<float>& b, vector<float>& c)
 {
-  A = &A_n;
+  this->A = &A;
+  this->b = &b;
+  this->c = &c;
   dim = n;
-  b = &b_n;
-  c = &c_n;
 }
 
 void Cholesky::factorL()
@@ -53,7 +46,7 @@ void Cholesky::factorL()
     
   L[dim-1][dim-1] = sqrt((*A)[dim-1][dim-1]-sum);
 
-  LPtr = L;
+  this->L = L;
 }
 
 void Cholesky::solve()
@@ -62,25 +55,25 @@ void Cholesky::solve()
   
   vector<float> y(dim);
 
-  y[0] = (*b)[0]/LPtr[0][0];
+  y[0] = (*b)[0]/L[0][0];
 
   for (int i = 1; i < dim; ++i)
   {
     sum = 0;
 
-    for (int j = 0; j <= i-1; ++j) sum += LPtr[i][j]*y[j];
+    for (int j = 0; j <= i-1; ++j) sum += L[i][j]*y[j];
   
-    y[i] = ((*b)[i]-sum)/LPtr[i][i];  
+    y[i] = ((*b)[i]-sum)/L[i][i];  
   }
 
-  (*c)[dim-1] = y[dim-1]/LPtr[dim-1][dim-1];
+  (*c)[dim-1] = y[dim-1]/L[dim-1][dim-1];
 
   for (int i = dim-2; i>=0; --i)
   {
     sum = 0;
 
-    for (int j = i+1; j < dim; ++j) sum += (*c)[j]*LPtr[j][i];
+    for (int j = i+1; j < dim; ++j) sum += (*c)[j]*L[j][i];
     
-    (*c)[i] = (y[i]-sum)/LPtr[i][i];
+    (*c)[i] = (y[i]-sum)/L[i][i];
   }
 };
