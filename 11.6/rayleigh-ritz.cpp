@@ -4,9 +4,9 @@
 #include <vector>
 #include <cmath>
 
-#include "utils/Cholesky/cholesky.h"
-#include "utils/Trapezoide/trapezoide.h" 
-#include "utils/BSpline/b-spline.h" 
+#include "../utils/Cholesky/cholesky.h"
+#include "../utils/Trapezoide/trapezoide.h" 
+#include "../utils/BSpline/b-spline.h" 
 #include "problem.h"
 #include "rayleigh-ritz.h"
 
