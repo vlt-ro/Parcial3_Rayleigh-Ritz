@@ -4,6 +4,41 @@
 using std::vector;
 
 
+namespace
+{
+    template <typename func_type>
+    /**
+     * @brief simpson_rule
+     * @param a  Límite inferior
+     * @param b  Límite superior
+     * @param n  Número de intervalos
+     * @param f  función que se quiere integrar
+     * @return resultado de integrar la función en el rango [a,b]
+     * @ref https://stackoverflow.com/questions/60005533/composite-simpsons-rule-in-c
+     */
+    double simpson_rule(double a, double b,
+                        int n, // Number of intervals
+                        func_type f)
+    {
+        double h = (b - a) / n;
+
+        // Internal sample points, there should be n - 1 of them
+        double sum_odds = 0.0;
+        for (int i = 1; i < n; i += 2)
+        {
+            sum_odds += f(a + i * h);
+        }
+        double sum_evens = 0.0;
+        for (int i = 2; i < n; i += 2)
+        {
+            sum_evens += f(a + i * h);
+        }
+
+        return (f(a) + f(b) + 2 * sum_evens + 4 * sum_odds) * h / 3;
+    }
+}
+
+
 Basis::Basis(double x_im1, double x_i,double x_ip1)
 {
     this->x_im1 = x_im1;
@@ -124,30 +159,42 @@ std::vector<Basis>& LinearRayleighRitz::getBasis()
 
 double LinearRayleighRitz::Q1(int i, std::vector<double>& x, double(*q)(double))
 {
-    return ( q(x[i]) + q(x[i+1]) ) * h[i] / 12.0;
+    auto f = [&x,q,i](float _x)->float{return q(_x)*(x[i+1] - _x)*(_x - x[i]);};
+    auto r = simpson_rule(x[i],x[i+1],10,f);
+    return r/(h[i]*h[i]);
 }
 
 double LinearRayleighRitz::Q2(int i, std::vector<double>& x, double(*q)(double))
 {
-    return ( 3*q(x[i]) + q(x[i-1]) ) * h[i-1] / 12.0;
+    auto f = [&x,q,i](float _x)->float{return q(_x)*(_x - x[i-1])*(_x - x[i-1]);};
+    auto r = simpson_rule(x[i-1],x[i],10,f);
+    return r/(h[i-1]*h[i-1]);
 }
 
 double LinearRayleighRitz::Q3(int i, std::vector<double>& x, double(*q)(double))
 {
-    return ( 3*q(x[i]) + q(x[i+1]) ) * h[i] / 12.0;
+    auto f = [&x,q,i](float _x)->float{return q(_x)*(x[i+1]-_x)*(x[i+1]-_x);};
+    auto r = simpson_rule(x[i],x[i+1],10,f);
+    return r/(h[i]*h[i]);
 }
 
 double LinearRayleighRitz::Q4(int i, std::vector<double>& x, double(*p)(double))
 {
-    return ( p(x[i]) + p(x[i-1]) ) * h[i-1] / 2.0;
+    auto f = [p](float _x)->float{return p(_x);};
+    auto r = simpson_rule(x[i-1],x[i],10,f);
+    return r/(h[i-1]*h[i-1]);
 }
 
 double LinearRayleighRitz::Q5(int i, std::vector<double>& x, double(*f)(double))
 {
-    return ( 2*f(x[i]) + f(x[i-1]) ) * h[i-1] / 6.0;
+    auto fun = [&x,f,i](float _x)->float{return f(_x)*(_x-x[i-1]);};
+    auto r = simpson_rule(x[i-1],x[i],10,fun);
+    return r/h[i-1];
 }
 
 double LinearRayleighRitz::Q6(int i, std::vector<double>& x, double(*f)(double))
 {
-    return ( 2*f(x[i]) + f(x[i+1]) ) * h[i] / 6.0;
+    auto fun = [&x,f,i](float _x)->float{return f(_x)*(x[i+1]-_x);};
+    auto r = simpson_rule(x[i],x[i+1],10,fun);
+    return r/h[i];
 }

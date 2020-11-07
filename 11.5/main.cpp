@@ -47,9 +47,9 @@ int main()
     for(size_t i=0; i<c.size(); ++i)
         cout << i << "\t" << c[i] << "\t" << c[i]/2 << endl;
 
-    cout << "x\tphi" << endl;
-    for(size_t i=0; i<x.size(); ++i)
-        cout << x[i] << ",\t" << expand(x[i], c, phi) << "," << endl;
+//    cout << "x\tphi" << endl;
+//    for(size_t i=0; i<x.size(); ++i)
+//        cout << x[i] << ",\t" << expand(x[i], c, phi) << "," << endl;
 
 
 

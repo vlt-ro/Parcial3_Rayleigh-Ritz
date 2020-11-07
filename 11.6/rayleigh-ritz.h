@@ -7,8 +7,8 @@
 #include <stdlib.h>
 #include <vector>
 
-#include "utils/Trapezoide/trapezoide.h" 
-#include "utils/BSpline/b-spline.h" 
+#include "../utils/Trapezoide/trapezoide.h" 
+#include "../utils/BSpline/b-spline.h" 
 #include "problem.h"
 
 using namespace std;

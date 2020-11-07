@@ -24,26 +24,6 @@ public :
   MetodoTrapezoide();
 
   /*
-   * @brief Fija los parametros de a,b,N ingresados por el usuario 
-  */
-  void setParameters(float, float, const function<float(float)> & f);
-
-  /*
-   * @brief Calcula el ancho del trapezoide en la iteracion k
-  */
-  void deltaX_k(int);
-
-  /*
-   * @brief Calcula el termino T_k 
-  */
-  void T_k(int);
-
-  /*
-   * @brief Realiza la integracion llegando hasta la iteracion N
-  */
-  void integralTrapezoide();
-
-  /*
   * @brief Resuelve la integral
   * @param lim_inf:  Limite inferior de la integral
   * @param lim_sup:  Limite superior de la integral
@@ -61,6 +41,27 @@ private :
   float t_k; // Area de 2^k trapezoides
   float integral = 0; // Resultado de la integral
   function<float(float)> function_eval; // Funcion a integrar
+
+
+  /*
+   * @brief Fija los parametros de a,b,N ingresados por el usuario
+   */
+  void setParameters(float, float, const function<float(float)> & f);
+
+  /*
+   * @brief Calcula el ancho del trapezoide en la iteracion k
+   */
+  void deltaX_k(int);
+
+  /*
+   * @brief Calcula el termino T_k
+   */
+  void T_k(int);
+
+  /*
+   * @brief Realiza la integracion llegando hasta la iteracion N
+   */
+  void integralTrapezoide();
 
 };
 
