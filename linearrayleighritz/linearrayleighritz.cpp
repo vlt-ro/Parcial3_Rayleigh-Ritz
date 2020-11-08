@@ -1,18 +1,47 @@
 #include "linearrayleighritz.h"
 #include <iostream>
-#include "../utils/tools.cpp"
+#include "../utils/tools.h"
 
 using std::vector;
-using tools::simpson_rule;
 
-Basis::Basis(double x_im1, double x_i,double x_ip1)
+namespace
+{
+    template <typename func_type>
+
+    /**
+     * @brief Integración con el método de simposon
+     * @param a Límite inferior
+     * @param b Límite superior
+     * @param n Número de intervalos
+     * @param f Función a integrar
+     * @return Integral de la funcion f en el rango [a,b]
+     * @ref https://stackoverflow.com/questions/60005533/composite-simpsons-rule-in-c
+     */
+    double simpson_rule(double a, double b,
+                        int n, // Number of intervals
+                        func_type f)
+    {
+      double h = (b - a) / n;
+
+      // Internal sample points, there should be n - 1 of them
+      double sum_odds = 0.0;
+      for (int i = 1; i < n; i += 2) { sum_odds += f(a + i * h);}
+
+      double sum_evens = 0.0;
+      for (int i = 2; i < n; i += 2) { sum_evens += f(a + i * h);}
+
+      return (f(a) + f(b) + 2 * sum_evens + 4 * sum_odds) * h / 3;
+    }
+}
+
+LBasis::LBasis(double x_im1, double x_i,double x_ip1)
 {
     this->x_im1 = x_im1;
     this->x_i = x_i;
     this->x_ip1 = x_ip1;
 }
 
-double Basis::operator()(double x)
+double LBasis::operator()(double x)
 {
     double result = 0;
 
@@ -52,7 +81,7 @@ std::vector<double> LinearRayleighRitz::solve(double(*p)(double),
     /* Step 2: Definir la base lineal por tramos phi_i */
     /***************************************************/
     for(int i=1; i <= n; ++i)
-        phi.push_back(Basis(x[i-1],x[i], x[i+1]));
+        phi.push_back(LBasis(x[i-1],x[i], x[i+1]));
 
     /*************************************/
     /* Step 3: Calculo de las integrales */
@@ -118,13 +147,23 @@ std::vector<double> LinearRayleighRitz::solve(double(*p)(double),
     c[n-1] = z[n];
     for(int i=n-1; i>0; --i)
         c[i-1] = z[i] - zeta[i]*c[i];
-
+    this->c = c;
     return c;
 }
 
-std::vector<Basis>& LinearRayleighRitz::getBasis()
+std::vector<LBasis>& LinearRayleighRitz::getBasis()
 {
     return phi;
+}
+
+double LinearRayleighRitz::eval(double x)
+{
+    double rs = 0;
+
+    for(size_t i=0; i<c.size(); ++i)
+        rs += c[i] * phi[i](x);
+
+    return rs;
 }
 
 double LinearRayleighRitz::Q1(int i, std::vector<double>& x, double(*q)(double))

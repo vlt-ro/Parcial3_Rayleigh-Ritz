@@ -1,10 +1,38 @@
 #include "csrayleighritz.h"
 #include <cstdlib>
 #include <cmath>
-#include "../utils/tools.cpp"
+#include "../utils/tools.h"
 
-using namespace tools;
 using namespace std;
+
+namespace
+{
+    template <typename func_type>
+    /**
+     * @brief Integración con el método de simposon
+     * @param a Límite inferior
+     * @param b Límite superior
+     * @param n Número de intervalos
+     * @param f Función a integrar
+     * @return Integral de la funcion f en el rango [a,b]
+     * @ref https://stackoverflow.com/questions/60005533/composite-simpsons-rule-in-c
+     */
+    double simpson_rule(double a, double b,
+                        int n, // Number of intervals
+                        func_type f)
+    {
+      double h = (b - a) / n;
+
+      // Internal sample points, there should be n - 1 of them
+      double sum_odds = 0.0;
+      for (int i = 1; i < n; i += 2) { sum_odds += f(a + i * h);}
+
+      double sum_evens = 0.0;
+      for (int i = 2; i < n; i += 2) { sum_evens += f(a + i * h);}
+
+      return (f(a) + f(b) + 2 * sum_evens + 4 * sum_odds) * h / 3;
+    }
+}
 
 csRayleighRitz::csRayleighRitz(std::size_t n)
 {
@@ -32,7 +60,7 @@ vector<double> csRayleighRitz::solve(double(*p)(double),
     /* Step 4: Definición de los elementos de la base */
     /**************************************************/
     for(unsigned i=0; i<= n+1; ++i)
-        phi.push_back( Basis(i,n,h));
+        phi.push_back( csBasis(i,n,h));
 
     /***************************************/
     /* Step 5-8: Calculo de las componentes*/
@@ -72,12 +100,23 @@ vector<double> csRayleighRitz::solve(double(*p)(double),
     /****************************************/
     gauss_jordan(n+2, A, b, c);
 
+    this->c = c;
     return c;
 }
 
-vector<Basis> &csRayleighRitz::getBasis()
+vector<csBasis> &csRayleighRitz::getBasis()
 {
     return phi;
+}
+
+double csRayleighRitz::eval(double x)
+{
+    double rs = 0;
+
+    for(size_t i=0; i<c.size(); ++i)
+        rs += c[i] * phi[i](x);
+
+    return rs;
 }
 
 double csRayleighRitz::x_i(int i)
@@ -90,35 +129,35 @@ double csRayleighRitz::x_i(int i)
 
 
 
-Basis::Basis(int i,int n, double h): phi(nullptr)
+csBasis::csBasis(int i,int n, double h): phi(nullptr)
 {
     setMembers(i,n,h);
 }
 
-Basis::Basis(const Basis &old): phi(nullptr)
+csBasis::csBasis(const csBasis &old): phi(nullptr)
 {
     setMembers(old.i,old.n,old.h);
 }
 
-Basis::~Basis()
+csBasis::~csBasis()
 {
     // Liberar memória
     if(phi)
         delete phi;
 }
 
-double Basis::operator()(double x)
+double csBasis::operator()(double x)
 {
     return (*phi)(x);
 }
 
-double Basis::dPhi(double x)
+double csBasis::dPhi(double x)
 {
     return phi->DPhi(x);
 }
 
 
-void Basis::setMembers(int i, int n, double h)
+void csBasis::setMembers(int i, int n, double h)
 {
     this->i = i;
     this->n = n;
