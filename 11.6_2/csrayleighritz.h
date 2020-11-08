@@ -53,6 +53,11 @@ public:
      */
     Basis(int i, int n, double h);
 
+    /**
+     * Sobrecarga del constructor de copia
+     */
+    Basis(const Basis &);
+
     ~Basis();
 
     double operator()(double x);
@@ -61,6 +66,11 @@ public:
 
 private:
     Phi *phi;
+    int i;
+    int n;
+    double h;
+
+    void setMembers(int i, int n, double h);
 };
 
 #endif // CSRAYLEIGHRITZ_H

@@ -55,7 +55,6 @@ Phi_0::Phi_0(double h)
 
 double Phi_0::operator()(double x)
 {
-    std::cout << "phi_0 ";
     return S::s(x/h)-4*S::s((x+h)/h);
 }
 

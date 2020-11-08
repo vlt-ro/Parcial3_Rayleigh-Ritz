@@ -1,4 +1,6 @@
 #include <vector>
+#include <iostream>
+
 using namespace std;
 
 namespace tools
@@ -38,9 +40,9 @@ namespace tools
     *        solucion.
     * @ref
   */ 
-  void gauss_jordan(int n, const vector<vector<float>>& A, const vector<float>& b, vector<float>& c)
+  void gauss_jordan(int n, const vector<vector<double>>& A, const vector<double>& b, vector<double>& c)
   {
-    vector<vector<float>> M(n,vector<float>(n+1)); // Matriz aumentada (A|b)
+    vector<vector<double>> M(n,vector<double>(n+1)); // Matriz aumentada (A|b)
     for (int i = 0; i < n; ++i)
     {
       for (int j = 0; j < n+1; ++j)
