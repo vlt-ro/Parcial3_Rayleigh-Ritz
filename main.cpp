@@ -1,46 +1,124 @@
 #include <iostream>
-#include "csrayleighritz/csrayleighritz.h"
-#include "linearrayleighritz/linearrayleighritz.h"
+#include "rayleighritz/csrayleighritz/csrayleighritz.h"
+#include "rayleighritz/linearrayleighritz/linearrayleighritz.h"
+#include "rayleighritz//rayleighritz.h"
+
+#include<iomanip>
+
 #include <vector>
 #include <cmath>
-
 #include <fstream>
 
 using namespace std;
 
-double p(double)
-{
-    return 1;
-}
+double p(double) { return 1;}
 
-double q(double)
-{
-    return pow(M_PI,2);
-}
+double q(double) { return pow(M_PI,2);}
 
-double f(double x)
-{
-    return 2*pow(M_PI,2)*sin(M_PI*x);
-}
+double f(double x) { return 2*pow(M_PI,2)*sin(M_PI*x);}
 
 int main()
 {
-    vector<double>x;
-    int n = 9;
-    for(int i=0; i<=n+1; ++i)
-        x.push_back((1.0/(float)(n+1))*i);
+  char choose;
+  int n=9;
+  vector<double> x;
+  vector<double> y;
+  
+  RayleighRitz *rr;
 
-//    csRayleighRitz rr(9);
-    LinearRayleighRitz rr(x);
-    auto c = rr.solve(p, q, f);
+  cout<<"------------------------------------------------------------\n";
+  cout<<"Se va a solucionar una ecuación diferencial de la forma:"<<endl;
+  cout<<"-D( p(x) D(y) ) + q(x)y = f(x) con condiciones de frontera y(0)=y(1)=0"<<endl;
+  cout<<"Se usa el método de Rayleigh-Ritz"<<endl;
+  cout<<"-------------------------------------------------------------\n"; 
+  cout<<"Elija la base con la que quiere que se solucione el problema:"<<endl;
+  cout<<"1. Lineal a tramos.\n";
+  cout<<"2. Cúbica spline.\n";
+  cin>>choose;
+  //choose = 1;
+  cout<<"-------------------------------------------------------------\n"; 
+  cout<<"Ingrese el número de nodos que quiere que tenga su solución:";
+  cin.clear(); // Se limpia lo que pueda haber en el buffer
+  cin.ignore(10000, '\n');
+  cin>>n;
+  //n=10;
+  switch (choose)
+  {
+    case '1':
 
-    cout << "i\tc\t" << endl;
-    for(size_t i=0; i<c.size(); ++i)
-        cout << i << "\t" << c[i] <<  endl;
+        for(int i=0; i<=n+1; ++i)
+          x.push_back((1.0/(float)(n+1))*i);
 
-    cout << "x\tphi" << endl;
-    for(size_t i=0; i<x.size(); ++i)
-        cout << x[i] << ",\t" << rr.eval(x[i]) << "," << endl;
+        rr = new LinearRayleighRitz(x);
+      
+      break;
 
-    return 0;
+
+    case '2':
+      
+        rr = new csRayleighRitz(n);
+      
+      break;
+      
+    default:
+      cout<<"Por favor ingresa una opcion valida\n";
+      exit(1);
+  }
+
+  rr->solve(p, q, f);
+
+  cout<<"-------------------------------------------------------------\n"; 
+  cout<<"Elija cómo desea obtener los resultados:"<<endl;
+  cout<<"1. Guardar en un archivo.\n";
+  cout<<"2. Imprimir en pantalla.\n";
+  cin>>choose;
+  //choose=1;
+  cout<<"-------------------------------------------------------------\n"; 
+  cout<<"Ingrese el número puntos que quiere que tenga su solución:";
+  cin.clear(); // Se limpia lo que pueda haber en el buffer
+  cin.ignore(10000, '\n');
+  cin>>n;
+  //n = 30;
+      
+  for(int i=0; i<n; ++i)
+    y.push_back((1.0/(float)(n-1))*i);
+      
+  switch (choose)
+  {
+    case '1':
+    {
+      ofstream file;
+      file.open ("resultado.csv");
+      //file.open ("resultado_lineal10.csv");
+      file <<"#x,y\n";
+      for(size_t i=0; i<y.size(); ++i)
+        file << y[i] << ",\t" << rr->eval(y[i]) << ",\n";
+
+      file.close();
+      
+      cout << "Se ha guardado en 'resultado.csv'" << endl;
+    }
+      break;
+
+    case '2':
+      
+      cout<<  "---------------------"<<endl;
+      cout << "|    x    |    y    |" << endl;
+      cout<<  "---------------------"<<endl;
+
+      for(size_t i=0; i<y.size(); ++i)
+      {
+        cout<<"|"<<setw(9)<<y[i]<<"|"; 
+        cout<<setw(9)<<rr->eval(y[i])<<"|\n"; 
+      }
+      cout<<  "---------------------"<<endl;
+      
+      break;
+      
+    default:
+      cout<<"Por favor ingresa una opcion valida\n";
+      exit(1);
+  }
+
+  return 0;
 }

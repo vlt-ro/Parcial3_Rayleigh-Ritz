@@ -1,30 +1,23 @@
+#ifndef SISTEMASLINEALES_H
+#define SISTEMASLINEALES_H
+
 #include <vector>
-#include <iostream>
-#include "tools.h"
 
-using namespace std;
+using std::vector;
 
+namespace sistemas_lineales
 
-
-//  template <typename func_type>
-//  double simpson_rule(double a, double b,
-//                      int n, // Number of intervals
-//                      func_type f)
-//  {
-//    double h = (b - a) / n;
-
-//    // Internal sample points, there should be n - 1 of them
-//    double sum_odds = 0.0;
-//    for (int i = 1; i < n; i += 2) { sum_odds += f(a + i * h);}
-    
-//    double sum_evens = 0.0;
-//    for (int i = 2; i < n; i += 2) { sum_evens += f(a + i * h);}
-
-//    return (f(a) + f(b) + 2 * sum_evens + 4 * sum_odds) * h / 3;
-//  }
-
-
-  void gauss_jordan(int n, const vector<vector<double>>& A, const vector<double>& b, vector<double>& c)
+{
+  /**
+   * @brief
+   * @param n Dimension de la matriz cuadrada
+   * @param A Matriz A de dimension nxn
+   * @param b Vector b de dimension 1xn
+   * @param c Vector c de dimension 1xn que contendra la
+   *        solucion.
+   * @ref http://cod-ayu.blogspot.com/2015/10/solucion-de-sistemas-de-ecuaciones.html
+   */
+  void gauss_jordan(int n,  vector<vector<double>>& A,  vector<double>& b, vector<double>& c)
   {
     vector<vector<double>> M(n,vector<double>(n+1)); // Matriz aumentada (A|b)
     for (int i = 0; i < n; ++i)
@@ -91,3 +84,6 @@ using namespace std;
 
     for(int i=0;i<n;i++){ c[i] = M[i][n];}
   }
+}
+
+#endif // SISTEMASLINEALES_H

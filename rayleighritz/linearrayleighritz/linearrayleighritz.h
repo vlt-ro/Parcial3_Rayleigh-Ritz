@@ -6,12 +6,13 @@
 
 #ifndef LINEARRAYLEIGHRITZ_H
 #define LINEARRAYLEIGHRITZ_H
+#include "../rayleighritz.h"
 
 #include <vector>
 
 class LBasis;
 
-class LinearRayleighRitz
+class LinearRayleighRitz: public RayleighRitz
 {
 public:
 

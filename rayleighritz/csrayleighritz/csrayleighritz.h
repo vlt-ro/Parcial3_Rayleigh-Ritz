@@ -2,13 +2,14 @@
 #define CSRAYLEIGHRITZ_H
 
 #include <vector>
-#include "bslipne.h"
-
+#include "bspline.h"
+#include "../rayleighritz.h"
 using std::vector;
+
 
 class csBasis;
 
-class csRayleighRitz
+class csRayleighRitz : public RayleighRitz
 {
 public:
     csRayleighRitz(std::size_t n);
@@ -21,6 +22,7 @@ public:
      *
      * @return
      */
+    ~csRayleighRitz(); // destructor
     vector<double> solve(double(*p)(double),
                          double(*q)(double),
                          double(*f)(double));
