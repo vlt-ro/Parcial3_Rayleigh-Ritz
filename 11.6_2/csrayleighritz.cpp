@@ -1,6 +1,10 @@
 #include "csrayleighritz.h"
 #include <cstdlib>
 #include <cmath>
+#include "../utils/tools"
+
+using namespace tools;
+using namespace std;
 
 csRayleighRitz::csRayleighRitz(std::size_t n)
 {
@@ -30,17 +34,18 @@ vector<double> csRayleighRitz::solve(double(*p)(double),
     for(unsigned i=0; i<= n+1; ++i)
         phi.push_back( Basis(i,n,h));
 
-    /**************************************************/
-    /* Steps 5-8: Definición de los elementos de la base */
-    /**************************************************/
+    /***************************************/
+    /* Step 5-8: Calculo de las componentes*/
+    /* de la matriz A                      */
+    /***************************************/
     for (int i = 0; i < n+2; ++i)
     {
       for (int j = i; j <= std::min(i+3,int(n+1)); ++j)
       {
-        double L = std::max(x_i(j-2), (double)(0));
-        double U = std::min(x_i(i+2), (double)(1));
+        double L = std::max(x_i(j-2), 0.);
+        double U = std::min(x_i(i+2), 1.);
 
-        A[i][j] = Aij(i,j, L, U);
+        A[i][j] =  simpson_rule( L, U, 20, [i,j,p,q,&phi](float x)->float {return p(x)*phi[i].dPhi(x)*phi[j].dPhi(x)+q(x)*phi[i](x)*phi[j](x);});
 
         if (i!=j) A[j][i] = A[i][j]; // La matriz es simetrica
       }
@@ -58,8 +63,15 @@ vector<double> csRayleighRitz::solve(double(*p)(double),
       double L = std::max(x_i(i-2),(double)(0));
       double U = std::min(x_i(i+2),(double)(1));
 
-      b[i] = bi(i,L,U);
+      b[i] = simpson_rule(L,U,20,[i,f,&phi](float x)->float {return f(x)*phi[i](x);});
     }
+
+    /****************************************/
+    /* Step 10: Se encuentra c, resolviendo */
+    /* el sistema de ecuaciones             */
+    /****************************************/
+    gauss_jordan(n+2, A, b, c);
+
     return c;
 }
 

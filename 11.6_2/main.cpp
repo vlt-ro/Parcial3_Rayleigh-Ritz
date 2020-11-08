@@ -1,5 +1,5 @@
 #include <iostream>
-#include <csrayleighritz.h>
+#include "csrayleighritz.h"
 #include <vector>
 #include <cmath>
 
