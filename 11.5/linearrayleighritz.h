@@ -16,6 +16,8 @@ class LinearRayleighRitz
 {
 public:
 
+    LinearRayleighRitz(std::vector<double>& x);
+
     /**
      * @brief Resuelve de forma aproximada la EDO
      *        -D( p(x) D(y) ) + q(x)y = f(x)
@@ -24,7 +26,7 @@ public:
      *          donde se calculará la aproximación a la función
      * @return
      */
-    std::vector<double> solve(std::vector<double>& x,
+    std::vector<double> solve(
                              double(*p)(double),
                              double(*q)(double),
                              double(*f)(double));
@@ -38,10 +40,10 @@ public:
 private:
     std::vector<double> h; // Coeficientes h_i = x_{i+1} - x_i
     std::vector<Basis> phi; // Base lineal a trozos
+    std::vector<double>& x;
 
     /*
-     * Integrales a resolver (página 700) con las aproximaciones
-     * de la página 702
+     * Integrales a resolver (página 700)
      */
     double Q1(int , std::vector<double>& , double(*)(double));
     double Q2(int , std::vector<double>& , double(*)(double));

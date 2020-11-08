@@ -1,43 +1,9 @@
 #include "linearrayleighritz.h"
 #include <iostream>
+#include "../utils/tools.cpp"
 
 using std::vector;
-
-
-namespace
-{
-    template <typename func_type>
-    /**
-     * @brief simpson_rule
-     * @param a  Límite inferior
-     * @param b  Límite superior
-     * @param n  Número de intervalos
-     * @param f  función que se quiere integrar
-     * @return resultado de integrar la función en el rango [a,b]
-     * @ref https://stackoverflow.com/questions/60005533/composite-simpsons-rule-in-c
-     */
-    double simpson_rule(double a, double b,
-                        int n, // Number of intervals
-                        func_type f)
-    {
-        double h = (b - a) / n;
-
-        // Internal sample points, there should be n - 1 of them
-        double sum_odds = 0.0;
-        for (int i = 1; i < n; i += 2)
-        {
-            sum_odds += f(a + i * h);
-        }
-        double sum_evens = 0.0;
-        for (int i = 2; i < n; i += 2)
-        {
-            sum_evens += f(a + i * h);
-        }
-
-        return (f(a) + f(b) + 2 * sum_evens + 4 * sum_odds) * h / 3;
-    }
-}
-
+using tools::simpson_rule;
 
 Basis::Basis(double x_im1, double x_i,double x_ip1)
 {
@@ -65,8 +31,12 @@ double Basis::operator()(double x)
 }
 
 
-std::vector<double> LinearRayleighRitz::solve(std::vector<double> &x,
-                                             double(*p)(double),
+LinearRayleighRitz::LinearRayleighRitz(std::vector<double>& x):x(x)
+{
+
+}
+
+std::vector<double> LinearRayleighRitz::solve(double(*p)(double),
                                              double(*q)(double),
                                              double(*f)(double))
 {

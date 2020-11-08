@@ -39,8 +39,8 @@ int main()
     for(int i=0; i<=n+1; ++i)
         x.push_back((1.0/(float)(n+1))*i);
 
-    LinearRayleighRitz rr;
-    auto c = rr.solve(x, p, q, f);
+    LinearRayleighRitz rr(x);
+    auto c = rr.solve(p, q, f);
     auto phi = rr.getBasis();
 
     cout << "i\tc\tc/2" << endl;
