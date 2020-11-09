@@ -49,7 +49,7 @@ vector<double> csRayleighRitz::solve(double(*p)(double),
         double L = std::max(x_i(j-2), 0.);
         double U = std::min(x_i(i+2), 1.);
 
-        A[i][j] =  simpson_rule( L, U, 20, [i,j,p,q,this](float x)->float {return p(x)*this->phi[i].dPhi(x)*this->phi[j].dPhi(x)+q(x)*this->phi[i](x)*this->phi[j](x);});
+        A[i][j] =  simpson_rule( L, U, 100, [i,j,p,q,this](float x)->float {return p(x)*this->phi[i].dPhi(x)*this->phi[j].dPhi(x)+q(x)*this->phi[i](x)*this->phi[j](x);});
 
         if (i!=j) A[j][i] = A[i][j]; // La matriz es simetrica
       }
@@ -67,7 +67,7 @@ vector<double> csRayleighRitz::solve(double(*p)(double),
       double L = std::max(x_i(i-2),(double)(0));
       double U = std::min(x_i(i+2),(double)(1));
 
-      b[i] = simpson_rule(L,U,20,[i,f,this](float x)->float {return f(x)*this->phi[i](x);});
+      b[i] = simpson_rule(L,U,100,[i,f,this](float x)->float {return f(x)*this->phi[i](x);});
     }
 
     /****************************************/

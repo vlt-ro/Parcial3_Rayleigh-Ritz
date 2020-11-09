@@ -1,10 +1,9 @@
-#include <iostream>
 #include "rayleighritz/csrayleighritz/csrayleighritz.h"
 #include "rayleighritz/linearrayleighritz/linearrayleighritz.h"
 #include "rayleighritz//rayleighritz.h"
 
-#include<iomanip>
-
+#include <iostream>
+#include <iomanip>
 #include <vector>
 #include <cmath>
 #include <fstream>
@@ -35,13 +34,11 @@ int main()
   cout<<"1. Lineal a tramos.\n";
   cout<<"2. Cúbica spline.\n";
   cin>>choose;
-  //choose = 1;
   cout<<"-------------------------------------------------------------\n"; 
   cout<<"Ingrese el número de nodos que quiere que tenga su solución:";
   cin.clear(); // Se limpia lo que pueda haber en el buffer
   cin.ignore(10000, '\n');
   cin>>n;
-  //n=10;
   switch (choose)
   {
     case '1':
@@ -72,13 +69,11 @@ int main()
   cout<<"1. Guardar en un archivo.\n";
   cout<<"2. Imprimir en pantalla.\n";
   cin>>choose;
-  //choose=1;
   cout<<"-------------------------------------------------------------\n"; 
-  cout<<"Ingrese el número puntos que quiere que tenga su solución:";
+  cout<<"Ingrese el número de puntos que quiere que tenga su solución:";
   cin.clear(); // Se limpia lo que pueda haber en el buffer
   cin.ignore(10000, '\n');
   cin>>n;
-  //n = 30;
       
   for(int i=0; i<n; ++i)
     y.push_back((1.0/(float)(n-1))*i);
@@ -88,12 +83,16 @@ int main()
     case '1':
     {
       ofstream file;
-      file.open ("resultado.csv");
-      //file.open ("resultado_lineal10.csv");
+      //file.open ("resultado.csv");
+      file.open ("resultado_lineal5.csv");
       file <<"#x,y\n";
       for(size_t i=0; i<y.size(); ++i)
-        file << y[i] << ",\t" << rr->eval(y[i]) << ",\n";
-
+      {
+        if (i<y.size()-1)
+          file << y[i] << ",\t" << rr->eval(y[i]) << "\n";
+        else
+          file << y[i] << ",\t" << rr->eval(y[i]);
+      }
       file.close();
       
       cout << "Se ha guardado en 'resultado.csv'" << endl;

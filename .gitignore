@@ -1,4 +1,6 @@
 *.o
+examples/
 *.pro
 *.pro.user*
 *build-*
+*.ipynb_checkpoints/
