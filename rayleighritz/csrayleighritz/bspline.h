@@ -1,7 +1,6 @@
 #ifndef BSLIPNE_H
 #define BSLIPNE_H
 
-
 class Phi
 {
 public:

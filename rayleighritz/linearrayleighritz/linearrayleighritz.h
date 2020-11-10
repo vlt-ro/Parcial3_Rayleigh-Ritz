@@ -1,5 +1,4 @@
 /**
- * @author Santiago Duque
  * @brief Clase que implementa el método de Rayleigh-Ritz mostrado
  *        en el algoritmo 11.5, de la sección 11.5 del libro "Numerical
  *        Analysis" de Richard L. Burden y J. Douglas Faires.
@@ -7,14 +6,17 @@
 
 #ifndef LINEARRAYLEIGHRITZ_H
 #define LINEARRAYLEIGHRITZ_H
+#include "../rayleighritz.h"
 
 #include <vector>
 
-class Basis;
+class LBasis;
 
-class LinearRayleighRitz
+class LinearRayleighRitz: public RayleighRitz
 {
 public:
+
+    LinearRayleighRitz(std::vector<double>& x);
 
     /**
      * @brief Resuelve de forma aproximada la EDO
@@ -24,7 +26,7 @@ public:
      *          donde se calculará la aproximación a la función
      * @return
      */
-    std::vector<double> solve(std::vector<double>& x,
+    std::vector<double> solve(
                              double(*p)(double),
                              double(*q)(double),
                              double(*f)(double));
@@ -33,15 +35,18 @@ public:
      * Retorna la base que expande la aproximación de la
      * solución.
      */
-    std::vector<Basis> &getBasis();
+    std::vector<LBasis> &getBasis();
+
+    double eval(double);
 
 private:
     std::vector<double> h; // Coeficientes h_i = x_{i+1} - x_i
-    std::vector<Basis> phi; // Base lineal a trozos
+    std::vector<LBasis> phi; // Base lineal a trozos
+    std::vector<double> c; //Coeficientes de expansión
+    std::vector<double>& x;
 
     /*
-     * Integrales a resolver (página 700) con las aproximaciones
-     * de la página 702
+     * Integrales a resolver (página 700)
      */
     double Q1(int , std::vector<double>& , double(*)(double));
     double Q2(int , std::vector<double>& , double(*)(double));
@@ -57,7 +62,7 @@ private:
  * funciones usadas en el método lineal por partes
  * de Ryleigh-Ritz.
  */
-class Basis
+class LBasis
 {
 public:
     /**
@@ -67,7 +72,7 @@ public:
      * @param x_i   Punto x_i
      * @param x_ip1 Punto x_{i+1}
      */
-    Basis(double x_im1, double x_i,double x_ip1);
+    LBasis(double x_im1, double x_i,double x_ip1);
 
     /**
      * @brief Sobrecarga del operator () para usar los objetos de

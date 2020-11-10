@@ -2,13 +2,14 @@
 #define CSRAYLEIGHRITZ_H
 
 #include <vector>
-#include "bslipne.h"
-
+#include "bspline.h"
+#include "../rayleighritz.h"
 using std::vector;
 
-class Basis;
 
-class csRayleighRitz
+class csBasis;
+
+class csRayleighRitz : public RayleighRitz
 {
 public:
     csRayleighRitz(std::size_t n);
@@ -21,14 +22,18 @@ public:
      *
      * @return
      */
+    ~csRayleighRitz(); // destructor
     vector<double> solve(double(*p)(double),
                          double(*q)(double),
                          double(*f)(double));
 
-    vector<Basis>& getBasis();
+    vector<csBasis>& getBasis();
+
+    double eval(double);
 
 private:
-    vector<Basis> phi; //B-Spline basis
+    vector<csBasis> phi; //B-Spline basis
+    vector<double> c; //Coeficientes de expansión
     std::size_t n;
     double h;
 
@@ -44,21 +49,21 @@ private:
  * funciones usadas en el método lineal por partes
  * de Ryleigh-Ritz.
  */
-class Basis
+class csBasis
 {
 public:
 
     /**
      * @brief Constructor para inicializar un elemento de la base
      */
-    Basis(int i, int n, double h);
+    csBasis(int i, int n, double h);
 
     /**
      * Sobrecarga del constructor de copia
      */
-    Basis(const Basis &);
+    csBasis(const csBasis &);
 
-    ~Basis();
+    ~csBasis();
 
     double operator()(double x);
 
